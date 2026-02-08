@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import { useLocale } from "@/lib/locale-context";
 import {
   Card,
@@ -61,11 +62,21 @@ type Goal = {
   color: string;
 };
 
-function getGreeting(t: (k: string) => string) {
+function getGreetingKey(): string {
   const hour = new Date().getHours();
-  if (hour < 12) return t("greeting");
-  if (hour < 18) return t("greetingAfternoon");
-  return t("greetingEvening");
+  if (hour < 12) return "greeting";
+  if (hour < 18) return "greetingAfternoon";
+  return "greetingEvening";
+}
+
+function useGreeting(t: (k: string) => string) {
+  const [greetingKey, setGreetingKey] = useState("greeting");
+
+  useEffect(() => {
+    setGreetingKey(getGreetingKey());
+  }, []);
+
+  return t(greetingKey);
 }
 
 function priorityColor(priority: string) {
@@ -77,6 +88,13 @@ function priorityColor(priority: string) {
     default:
       return "bg-muted text-muted-foreground";
   }
+}
+
+function getGreeting(t: (k: string) => string): string {
+  const hour = new Date().getHours();
+  if (hour < 12) return t("greeting");
+  if (hour < 18) return t("greetingAfternoon");
+  return t("greetingEvening");
 }
 
 export function DashboardContent({
@@ -97,6 +115,7 @@ export function DashboardContent({
   userName: string;
 }) {
   const { t } = useLocale();
+  const greeting = useGreeting(t);
   const completedHabitIds = new Set(habitLogs.map((l) => l.habit_id));
   const habitCompletion =
     habits.length > 0
@@ -108,7 +127,7 @@ export function DashboardContent({
       {/* Greeting */}
       <div>
         <h1 className="text-2xl font-bold text-foreground md:text-3xl text-balance">
-          {getGreeting(t)}, {userName}
+          {greeting}, {userName}
         </h1>
         <p className="mt-1 text-muted-foreground">{t("appTagline")}</p>
       </div>
