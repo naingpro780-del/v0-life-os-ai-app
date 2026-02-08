@@ -34,7 +34,6 @@ import {
   addMonths,
   isSameMonth,
   isSameDay,
-  isToday,
 } from "date-fns";
 
 type CalendarEvent = {
@@ -57,11 +56,6 @@ const EVENT_COLORS = [
   "#8B5CF6",
   "#EC4899",
 ];
-
-function getStableToday(): Date {
-  const now = new Date();
-  return new Date(now.getFullYear(), now.getMonth(), now.getDate());
-}
 
 export function CalendarContent({
   initialEvents,
@@ -316,11 +310,11 @@ export function CalendarContent({
                       !isSameMonth(day, currentMonth)
                         ? "text-muted-foreground/40"
                         : "text-card-foreground"
-                    } ${isSelected ? "bg-primary/10 ring-1 ring-primary" : "hover:bg-muted/50"} ${isToday(day) ? "font-bold" : ""}`}
+                    } ${isSelected ? "bg-primary/10 ring-1 ring-primary" : "hover:bg-muted/50"} ${isSameDay(day, initialDate) ? "font-bold" : ""}`}
                     aria-label={format(day, "MMMM d, yyyy")}
                   >
                     <span
-                      className={`flex h-6 w-6 items-center justify-center rounded-full text-xs ${isToday(day) ? "bg-primary text-primary-foreground" : ""}`}
+                      className={`flex h-6 w-6 items-center justify-center rounded-full text-xs ${isSameDay(day, initialDate) ? "bg-primary text-primary-foreground" : ""}`}
                     >
                       {format(day, "d")}
                     </span>

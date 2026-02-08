@@ -441,8 +441,7 @@ export function GoalsContent() {
                 </div>
                 {goal.target_date && (
                   <p className="text-xs text-muted-foreground">
-                    {t("targetDate")}:{" "}
-                    {new Date(goal.target_date).toLocaleDateString()}
+                    {t("targetDate")}: {goal.target_date}
                   </p>
                 )}
               </CardContent>
