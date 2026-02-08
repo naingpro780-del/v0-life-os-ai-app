@@ -58,14 +58,22 @@ const EVENT_COLORS = [
   "#EC4899",
 ];
 
+function getStableToday(): Date {
+  const now = new Date();
+  return new Date(now.getFullYear(), now.getMonth(), now.getDate());
+}
+
 export function CalendarContent({
   initialEvents,
+  serverToday,
 }: {
   initialEvents: CalendarEvent[];
+  serverToday: string;
 }) {
+  const initialDate = new Date(serverToday + "T00:00:00");
   const [events, setEvents] = useState(initialEvents);
-  const [currentMonth, setCurrentMonth] = useState(new Date());
-  const [selectedDate, setSelectedDate] = useState<Date | null>(new Date());
+  const [currentMonth, setCurrentMonth] = useState(initialDate);
+  const [selectedDate, setSelectedDate] = useState<Date | null>(initialDate);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -120,7 +128,7 @@ export function CalendarContent({
       if (!user) throw new Error("Not authenticated");
       const dateStr = selectedDate
         ? format(selectedDate, "yyyy-MM-dd")
-        : format(new Date(), "yyyy-MM-dd");
+        : serverToday;
       const startDateTime = allDay
         ? `${dateStr}T00:00:00`
         : `${dateStr}T${startTime}`;

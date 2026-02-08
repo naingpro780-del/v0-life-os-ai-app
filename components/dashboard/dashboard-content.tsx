@@ -90,13 +90,6 @@ function priorityColor(priority: string) {
   }
 }
 
-function getGreeting(t: (k: string) => string): string {
-  const hour = new Date().getHours();
-  if (hour < 12) return t("greeting");
-  if (hour < 18) return t("greetingAfternoon");
-  return t("greetingEvening");
-}
-
 export function DashboardContent({
   tasks,
   habits,

@@ -23,5 +23,6 @@ export default async function CalendarPage() {
     .lte("start_time", end.toISOString())
     .order("start_time", { ascending: true });
 
-  return <CalendarContent initialEvents={events || []} />;
+  const today = new Date().toISOString().split("T")[0];
+  return <CalendarContent initialEvents={events || []} serverToday={today} />;
 }
