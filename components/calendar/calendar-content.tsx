@@ -34,7 +34,6 @@ import {
   addMonths,
   isSameMonth,
   isSameDay,
-  isToday,
 } from "date-fns";
 
 type CalendarEvent = {
@@ -60,12 +59,15 @@ const EVENT_COLORS = [
 
 export function CalendarContent({
   initialEvents,
+  serverToday,
 }: {
   initialEvents: CalendarEvent[];
+  serverToday: string;
 }) {
+  const initialDate = new Date(serverToday + "T00:00:00");
   const [events, setEvents] = useState(initialEvents);
-  const [currentMonth, setCurrentMonth] = useState(new Date());
-  const [selectedDate, setSelectedDate] = useState<Date | null>(new Date());
+  const [currentMonth, setCurrentMonth] = useState(initialDate);
+  const [selectedDate, setSelectedDate] = useState<Date | null>(initialDate);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -120,7 +122,7 @@ export function CalendarContent({
       if (!user) throw new Error("Not authenticated");
       const dateStr = selectedDate
         ? format(selectedDate, "yyyy-MM-dd")
-        : format(new Date(), "yyyy-MM-dd");
+        : serverToday;
       const startDateTime = allDay
         ? `${dateStr}T00:00:00`
         : `${dateStr}T${startTime}`;
@@ -308,11 +310,11 @@ export function CalendarContent({
                       !isSameMonth(day, currentMonth)
                         ? "text-muted-foreground/40"
                         : "text-card-foreground"
-                    } ${isSelected ? "bg-primary/10 ring-1 ring-primary" : "hover:bg-muted/50"} ${isToday(day) ? "font-bold" : ""}`}
+                    } ${isSelected ? "bg-primary/10 ring-1 ring-primary" : "hover:bg-muted/50"} ${isSameDay(day, initialDate) ? "font-bold" : ""}`}
                     aria-label={format(day, "MMMM d, yyyy")}
                   >
                     <span
-                      className={`flex h-6 w-6 items-center justify-center rounded-full text-xs ${isToday(day) ? "bg-primary text-primary-foreground" : ""}`}
+                      className={`flex h-6 w-6 items-center justify-center rounded-full text-xs ${isSameDay(day, initialDate) ? "bg-primary text-primary-foreground" : ""}`}
                     >
                       {format(day, "d")}
                     </span>

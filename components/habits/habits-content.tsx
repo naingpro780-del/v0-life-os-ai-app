@@ -54,7 +54,7 @@ const COLORS = [
   "#06B6D4",
 ];
 
-function calculateStreak(habitId: string, logs: HabitLog[]): number {
+function calculateStreak(habitId: string, logs: HabitLog[], todayStr: string): number {
   const habitLogs = logs
     .filter((l) => l.habit_id === habitId)
     .map((l) => l.completed_at)
@@ -62,8 +62,7 @@ function calculateStreak(habitId: string, logs: HabitLog[]): number {
     .reverse();
   if (habitLogs.length === 0) return 0;
   let streak = 0;
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
+  const today = new Date(todayStr + "T00:00:00");
   for (let i = 0; i < 30; i++) {
     const d = new Date(today);
     d.setDate(d.getDate() - i);
@@ -179,7 +178,7 @@ export function HabitsContent({
 
   const last7Days: string[] = [];
   for (let i = 6; i >= 0; i--) {
-    const d = new Date();
+    const d = new Date(today + "T00:00:00");
     d.setDate(d.getDate() - i);
     last7Days.push(d.toISOString().split("T")[0]);
   }
@@ -281,7 +280,7 @@ export function HabitsContent({
         <div className="flex flex-col gap-3">
           {habits.map((habit) => {
             const isCompleted = completedIds.has(habit.id);
-            const streak = calculateStreak(habit.id, logs);
+            const streak = calculateStreak(habit.id, logs, today);
             return (
               <Card key={habit.id} className="bg-card">
                 <CardContent className="flex items-center gap-4 p-4">
